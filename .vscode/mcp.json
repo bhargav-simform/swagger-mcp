@@ -1,0 +1,14 @@
+
+
+{
+  "servers": {
+    "swagger-integrationJso": {
+        "command": "node",
+        "args": [
+        "dist/index.js"
+        ],
+        "env": {},
+        "cwd": "/home/bhargav/Bhargav_Projects_Github/swagger-mcp"
+  }
+  }
+}
