@@ -29,11 +29,34 @@ server.registerTool(
     title: "Swagger → Integration JSON",
     description:
       "Fetch a Swagger/OpenAPI JSON URL (optionally Basic Auth) and return a normalized JSON index of endpoints, schemas, and auth schemes to help integrate the API quickly.",
-    inputSchema: z.object({
-      jsonUrl: z.string().url().describe("Public or internal URL to the Swagger/OpenAPI JSON document."),
-      username: z.string().min(1).optional().describe("Optional HTTP Basic Auth username."),
-      password: z.string().min(1).optional().describe("Optional HTTP Basic Auth password."),
-    }),
+    inputSchema: z
+      .object({
+        jsonUrl: z
+          .string()
+          .url()
+          .refine(
+            (url) => {
+              try {
+                const { protocol } = new URL(url);
+                return protocol === "http:" || protocol === "https:";
+              } catch {
+                return false;
+              }
+            },
+            { message: "jsonUrl must use the http or https protocol." },
+          )
+          .describe("Public or internal URL (http or https) to the Swagger/OpenAPI JSON document."),
+        username: z.string().min(1).max(255).optional().describe("Optional HTTP Basic Auth username."),
+        password: z.string().min(1).max(255).optional().describe("Optional HTTP Basic Auth password."),
+      })
+      .refine(
+        (data) =>
+          (data.username !== undefined && data.password !== undefined) ||
+          (data.username === undefined && data.password === undefined),
+        {
+          message: "username and password must both be provided together, or both omitted.",
+        },
+      ),
     // NOTE: MCP SDK currently normalizes output schemas as objects; using `z.any()`
     // can cause `normalizeObjectSchema()` to return `undefined`, which later crashes
     // during output validation (Cannot read properties of undefined (reading '_zod')).

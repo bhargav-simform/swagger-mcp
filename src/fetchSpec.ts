@@ -5,6 +5,19 @@ export async function fetchSwaggerJson(params: {
   timeoutMs?: number;
 }): Promise<{ status: number; contentType: string | null; json: unknown }> {
   const timeoutMs = params.timeoutMs ?? 30_000;
+
+  const parsedUrl = (() => {
+    try {
+      return new URL(params.jsonUrl);
+    } catch {
+      throw new Error(`Invalid URL: ${params.jsonUrl}`);
+    }
+  })();
+
+  if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+    throw new Error(`Unsupported protocol "${parsedUrl.protocol}". Only http and https are allowed.`);
+  }
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
