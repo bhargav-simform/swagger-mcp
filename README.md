@@ -32,7 +32,7 @@ SWAGGER_MCP_DEBUG=1 node dist/index.js
 
 ## MCP Tool
 
-### `swagger.integrationJson`
+### `swagger-integrationJson`
 
 Input:
 ```json
@@ -42,6 +42,15 @@ Input:
   "password": "optional-basic-auth-password"
 }
 ```
+
+Public OpenAPI example:
+```json
+{
+  "jsonUrl": "https://xquik.com/openapi.json"
+}
+```
+
+Use `username` and `password` only when the spec document itself is protected.
 
 Output:
 - `structuredContent`: the parsed integration JSON object

@@ -61,6 +61,7 @@ server.registerTool(
       const result = buildIntegrationJson(buildParams);
 
       return {
+        structuredContent: result,
         content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
       };
     } catch (err) {
